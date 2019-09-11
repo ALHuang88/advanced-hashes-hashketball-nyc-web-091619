@@ -114,81 +114,41 @@ def game_hash
 end
 
 def num_points_scored(player_name)
-  
-  game_hash.each do |team, chars|
-    game_hash[team][:players].each do |name, stats|
-     if player_name == name
-       return stats[:points] 
-  
-      end
-    end
-  
-  end
-  
 
-end
+   SOLUTION 1 - naive
+   some_hash.each do |key, value|
+   game_hash.each do |team, team_data|
+     team_data.each do |attr, data|
+     if attr == :players
+       found_player = data.find do |player|
+         player[:player_name] == player_name
+       end
 
-def team_colors(name_of_team)
-  game_hash.each do |team, chars|
-    game_hash[team].each do |name, chars|
-        if name_of_team == chars
-          return game_hash[team][:colors]
-        end
-    end
-  end
-end
+       if found_player
+         return found_player[:points]
+       end
+     end
+   end
+ end
 
-def team_names
-  teams = []
-  game_hash.each do |team, chars|
-      teams.push(game_hash[team][:team_name])
-  end
-  return teams
-end
+ SOLUTION 2 - good
+ game_hash.each do |team, team_data|
+   team_data[:players].each do |player|
+     if player[:player_name] == player_name
+       return player[:points]
+     end
+   end
+ end
 
-def players_numbers(name_of_team)
+ SOLUTION 3
+ get a list of all the players
+  all_players = game_hash.values.collect do |team|
+    team[:players]
+  end.flatten
 
-  numbers = []
-  game_hash.each do |team, chars|
-    if name_of_team == game_hash[team][:team_name]
-      game_hash[team][:players].each do |name, stats|
-        numbers.push(stats[:number])
-      end
-    end
-  end
-  return numbers
-  
-end
-
-def big_shoe_rebounds
-  names = []
-  shoe_sizes = []
-
-  game_hash.each do |team, chars|
-    game_hash[team][:players].each do |name,stats|
-      names.push(name)
-      shoe_sizes.push(stats[:shoe])
-    end
-  end
-
-  largest = -1
-  shoe_sizes.each do |x|
-    if x > largest
-      largest = x
-    end
-  end
-  
-  player_with_largest = names[shoe_sizes.index(largest)]
-  
-  game_hash.each do |team, chars|
-    game_hash[team][:players].each do |name, stats|
-     if player_with_largest == name
-       return stats[:rebounds]
-  
-      end
-    end
+   find the player whose name matches the argument 'player_name'
+   return that player's points
+  all_players.each do |player|
+    return player[:points] if player[:player_name] == player_name
   end
 end
-
-big_shoe_rebounds
-
